@@ -221,3 +221,33 @@ void limpiar_cache(const char *directorio_cache, long ttl) {
 }
 
 
+void *funcion_limpiar_cache(void *args) {
+    /**
+    * Esta es la función que se ejecuta en un hilo separado y se encarga de la limpieza periódica del caché.
+    * 
+    * @param arg Puntero a cualquier argumento que se quiera pasar a la función del hilo. En este caso no se utiliza.
+    * @return void* Retorna un puntero NULL ya que no se devuelve ningún resultado.
+    *
+    * Este hilo se ejecuta indefinidamente y realiza una limpieza del caché cada 100 segundos.
+    * Cada 100 segundos, esta función despierta y llama a `limpiar_cache` para eliminar los archivos
+    * de caché que han excedido su tiempo de vida útil (TTL).
+    */
+
+    struct LimpiarArgs *limpiarArgs = (struct LimpiarArgs *)args;
+    long ttl = limpiarArgs->ttl;
+
+    // Un bucle infinito que asegura que la limpieza se ejecute constantemente mientras el servidor esté activo.
+    while (1) {
+        // Pausa la ejecución del hilo actual durante 100 segundos.
+        sleep(30);
+
+        // Imprime en la salida estándar que la limpieza del caché está a punto de realizarse.
+        printf("Ejecutando limpieza de caché.\n");
+
+        // Llama a la función `limpiar_cache` pasando el directorio donde se almacena el caché y el TTL global.
+        limpiar_cache(CACHE_DIR, ttl);
+    }
+
+    // Retorna NULL ya que la función no necesita devolver nada.
+    return NULL;
+}

@@ -6,12 +6,21 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <openssl/md5.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <dirent.h>
+#include <pthread.h>
+#include <stdarg.h>
+#include "manejoCache.h"
 
 #define MAXIMUM_SIZE_RESPONSE 1024
 #define PORT 8080
 #define SOCKET_ADDRESS struct sockaddr
 #define MAX_PATH_LENGTH 256
 #define MAX_URL_LENGTH 256
+
+long ttl_global = 0; // Variable global para almacenar el tiempo de vida (TTL) del caché.
 
 struct FileNameAndExtension {
     char file_name[256];
@@ -308,6 +317,7 @@ int main(int argc, char *argv[]) {
     int option = menu();
 
     int socket_file_descriptor; // Declara aquí para evitar redefiniciones
+    char nombre_archivo_cache[2 * MD5_DIGEST_LENGTH + 1] = {0};
 
     switch (option) {
         case 1:
@@ -315,7 +325,8 @@ int main(int argc, char *argv[]) {
             socket_file_descriptor = doTheConnectionWithTheProxy();
             struct pathAndRequest pathAndRequest_get = createTheRequest(method, server_url_with_port); // Declaración y asignación
 
-
+            // Genera el nombre del archivo de caché basado en el host.
+            generar_nombre_archivo_cache(pathAndRequest_get.server_url, nombre_archivo_cache);
 
             printf("\n\n\nServer URL: %s\n", pathAndRequest_get.server_url);
             printf("Path: %s\n", pathAndRequest_get.path);
