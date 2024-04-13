@@ -1,0 +1,489 @@
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /page2.com HTTP/1.1
+Respuesta enviada a page2.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: GET /page2.com HTTP/1.1
+Respuesta para /page2.com servida desde caché.
+
+Petición recibida: HEAD /page2.com HTTP/1.1
+Respuesta para /page2.com servida desde caché.
+
+Petición recibida: HEAD /page2.com HTTP/1.1
+Respuesta para /page2.com servida desde caché.
+
+Petición recibida: GET / HTTP/1.1
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@54.89.6.126
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: HEAD /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /page2.com HTTP/1.1
+Respuesta enviada a page2.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /page3.com HTTP/1.1
+Respuesta enviada a page3.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /page3.com HTTP/1.1
+Respuesta enviada a page3.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET /page3.com HTTP/1.1
+Respuesta para /page3.com servida desde caché.
+
+Petición recibida: GET /page3.com HTTP/1.1
+Respuesta para /page3.com servida desde caché.
+
+Petición recibida: GET /page3.com HTTP/1.1
+Respuesta enviada a page3.com, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: GET http://uplo.ad/?v=1&ip=44.207.6.109&port=8080 HTTP/1.1
+Respuesta enviada a uplo.ad, con encabezado Via: ubuntu@44.207.6.109
+
+Petición recibida: CONNECT uplo.ad:443 HTTP/1.1
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /epi.ejemplo HTTP/1.1
+Respuesta enviada a epi.ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /epi.ejemplo.com HTTP/1.1
+Respuesta enviada a epi.ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /api.ejemplo.com HTTP/1.1
+Respuesta enviada a api.ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /api.ejemplo HTTP/1.1
+Respuesta enviada a api.ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /api.ejemplo HTTP/1.1
+Respuesta enviada a api.ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /api.ejemplo HTTP/1.1
+Respuesta enviada a api.ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /ejemplo HTTP/1.1
+Respuesta enviada a ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /ejemplo.com HTTP/1.1
+Respuesta enviada a ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /ejemplo.com HTTP/1.1
+Respuesta enviada a ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /ejemplo.com:80 HTTP/1.1
+Petición recibida: GET /ejemplo.com HTTP/1.1
+Petición recibida: GET /ejemplo.com:80 HTTP/1.1
+Respuesta enviada a ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /ejemplo HTTP/1.1
+Petición recibida: GET SHELL=/bin/bash HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET SHELL=/bin/bash HTTP/1.1
+Petición recibida: GET example.com/ HTTP/1.1
+Petición recibida: GET example/ HTTP/1.1
+Petición recibida: GET /example.com HTTP/1.1
+Petición recibida: GET /ejemplo HTTP/1.1
+Respuesta enviada a ejemplo.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta enviada a page1.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta para /page1.com servida desde caché.
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta enviada a page1.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta enviada a page1.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta para /page1.com servida desde caché.
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta para /page1.com servida desde caché.
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta enviada a page1.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta para /page1.com servida desde caché.
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta para /page1.com servida desde caché.
+
+Petición recibida: GET example /
+Petición recibida: GET example /
+Petición recibida: GET example /
+Petición recibida: GET /example HTTP/1.1
+Petición recibida: GET example /
+Petición recibida: GET /example HTTP/1.1
+Petición recibida: GET /example.com HTTP/1.1
+Petición recibida: GET example.com /
+Petición recibida: GET /example.com HTTP/1.1
+Petición recibida: GET /example.com HTTP/1.1
+Petición recibida:   
+Petición recibida:   
+Petición recibida: GET /page1.com HTTP/1.1
+Petición recibida: GET /example.com HTTP/1.1
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta enviada a page1.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /page1.com HTTP/1.1
+Respuesta para /page1.com servida desde caché.
+
+Petición recibida:   
+Petición recibida:   
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /ejemplo HTTP/1.1
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET / HTTP/1.1
+Petición recibida: GET /3.219.115.240/folder/holaMundo HTTP/1.1
+Petición recibida: GET /3.219.115.240/folder/holaMundo HTTP/1.1
+Petición recibida: GET /3.219.115.240/folder/holaMundo HTTP/1.1
+Petición recibida: GET /3.219.115.240/folder/holaMundo HTTP/1.1
+Petición recibida: GET /3.219.115.240 HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /3.219.115.240 HTTP/1.1
+Petición recibida: GET /3.219.115.240/folder HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /3.219.115.240 HTTP/1.1
+Petición recibida: GET /3.219.115.240 HTTP/1.1
+Petición recibida: GET /http://3.219.115.240/folder/holaMundo.txt HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /3.219.115.240/folder/holaMundo.txt HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /example-files.online-convert.com/document/txt/example.txt HTTP/1.1
+Respuesta enviada a example-files.online-convert.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /https://example-files.online-convert.com/document/txt/example.txt HTTP/1.1
+Petición recibida: GET /example-files.online-convert.com/document/txt/example.txt HTTP/1.1
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta para /example servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a example.com, con encabezado Via: ubuntu@34.227.30.99
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida: GET /example HTTP/1.1
+Petición recibida: GET / HTTP/1.0
+Petición recibida: GET / HTTP/1.0
+Petición recibida: GET / HTTP/1.1
+Petición recibida: GET / HTTP/1.1
+Petición recibida:   
+Petición recibida:   
+Petición recibida: OPTIONS / HTTP/1.0
+Petición recibida: OPTIONS / RTSP/1.0
+Petición recibida: GET /nice%20ports%2C/Tri%6Eity.txt%2ebak HTTP/1.0
+Petición recibida: 0 ` 
+Petición recibida: 0w�1.3.6.1.4.1.1466.20037  .3.6.1.4.1.1466.20037
+Petición recibida: stats  
+Petición recibida: �  
+Petición recibida:   
+Petición recibida:   
+Petición recibida: �  
+Petición recibida:   
+Petición recibida:   
+Petición recibida: *1 $4 info
+Petición recibida:   
+Petición recibida:   
+Petición recibida:   
+Petición recibida: GET / HTTP/1.1
+Petición recibida: GET /example-files.online-convert.com/document/txt/example.txt HTTP/1.1
+Petición recibida: GET /page1/prueba.txt HTTP/1.1
+Respuesta enviada a page1.com, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /prueba.txt HTTP/1.1
+Respuesta enviada a page1.com, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Petición recibida: GET / HTTP/1.1
+Petición recibida:   
+Petición recibida: CONNECT www.google.com:443 HTTP/1.1
+Petición recibida: CONNECT example.com:443 HTTP/1.1
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Respuesta enviada a authpre.senasofiaplus.edu.co, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a authpre.senasofiaplus.edu.co, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Respuesta enviada a authpre.senasofiaplus.edu.co, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Respuesta enviada a authpre.senasofiaplus.edu.co, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /josso/signon/images/logoSofia.png HTTP/1.1
+Respuesta enviada a authpre.senasofiaplus.edu.co, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /folder/holaMundo.txt HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta para /img/planeta-Tierra-kawaii-300x300.jpg servida desde caché.
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET /img/planeta-Tierra-kawaii-300x300.jpg HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida:   
+Petición recibida:   
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida:   
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida: GET / HTTP/1.1
+Respuesta enviada a 3.219.115.240, con encabezado Via: ubuntu@44.202.61.119
+
+Petición recibida: GET / HTTP/1.1
+Respuesta para / servida desde caché.
+
+Petición recibida:   
+Petición recibida:   
