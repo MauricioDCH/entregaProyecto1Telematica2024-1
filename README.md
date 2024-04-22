@@ -292,7 +292,7 @@ El proyecto demuestra el éxito de la implementación de una aplicación de red 
 
 ---
 
-## 13. REFERENCIAS.
+## 13. Referencias.
 
 [1. datatracker.ietf.org](https://datatracker.ietf.org/doc/html/rfc7230)
 
@@ -311,3 +311,7 @@ El proyecto demuestra el éxito de la implementación de una aplicación de red 
 [8. www.geeksforgeeks.org](https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/)
 
 ---
+## 14. Video.
+En esta sección se encuentra el link del video de la entrega que es requerido.
+
+[Video requerido de entrega.](https://eafit-my.sharepoint.com/:v:/g/personal/mdcorreah_eafit_edu_co/EQ3pYOjMWsBDoJU--cmarooBZl5pFl2s384s7qdiviF8UQ?e=gOJJ64)
