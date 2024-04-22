@@ -311,3 +311,9 @@ El proyecto demuestra el éxito de la implementación de una aplicación de red 
 [8. www.geeksforgeeks.org](https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/)
 
 ---
+
+## 14. VIDEO
+
+En esta sección se encuentra el link del video de la entrega que es requerido. Ya se había agregado pero al hacer el commit no se agregó en la main, pero se puede ver en la rama developMauricio
+
+[Video requerido de entrega.](https://eafit-my.sharepoint.com/:v:/g/personal/mdcorreah_eafit_edu_co/EQ3pYOjMWsBDoJU--cmarooBZl5pFl2s384s7qdiviF8UQ?e=gOJJ64)
