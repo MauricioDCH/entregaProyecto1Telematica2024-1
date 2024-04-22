@@ -12,7 +12,9 @@
 #include <dirent.h>
 #include <pthread.h>
 #include <stdarg.h>
-#include "manejoCache.h"
+#include <sys/types.h>
+#include <limits.h>
+#include "manejoCacheClient.h"
 
 void generar_nombre_archivo_cache(const char *url, char *nombre_archivo_cache) {
     /**
@@ -45,11 +47,13 @@ void generar_nombre_archivo_cache(const char *url, char *nombre_archivo_cache) {
     printf("URL: %s\n", url);
 }
 
-void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *respuesta) {
+
+void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *request, const char *respuesta) {
     /**
     * Almacena la respuesta HTTP en el archivo de caché especificado, precedida por una estampa de tiempo.
     *
     * @param nombre_archivo_cache El nombre del archivo de caché donde se almacenará la respuesta.
+    * @param request La solicitud HTTP original que generó la respuesta.
     * @param respuesta La respuesta HTTP completa que se va a almacenar.
     *
     * Esta función abre (o crea si no existe) un archivo correspondiente al nombre de archivo de caché proporcionado.
@@ -59,16 +63,24 @@ void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *res
 
     char ruta_completa[1024];
     snprintf(ruta_completa, sizeof(ruta_completa), "%s/%s", CACHE_DIR, nombre_archivo_cache);
-
+    int fullLineOfCacheEntry = strlen(request) + strlen(respuesta) + 1;
     // Intenta abrir (o crear si no existe) el archivo de caché con permisos de escritura.
     FILE *archivo = fopen(ruta_completa, "w");
-
+    
     if(archivo == NULL) {
-        printf("Error archivo cache");
+        // Intenta crear la carpeta "historial"
+        if (mkdir(CACHE_DIR, 0777) == 0) {
+            printf("La carpeta \"%s\" se ha creado exitosamente.\n", CACHE_DIR);
+            // Intenta abrir el archivo nuevamente después de crear la carpeta.
+            archivo = fopen(ruta_completa, "w");
+        } else {
+            perror("Error al intentar crear la carpeta");
+            exit(EXIT_FAILURE);
+        }
     }
 
     // Verifica si el archivo se abrió correctamente.
-    if (archivo != NULL) {
+    if(archivo != NULL){
         // Obtiene la hora actual del sistema como un valor de tiempo de tipo time_t.
         time_t now = time(NULL);
 
@@ -77,7 +89,10 @@ void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *res
         fprintf(archivo, "%ld\n", now);
 
         // Escribe la respuesta HTTP completa en el archivo de caché.
-        fputs(respuesta, archivo);
+        // fputs(respuesta, archivo);
+        char *cache_entry = malloc(fullLineOfCacheEntry);
+        snprintf(cache_entry, fullLineOfCacheEntry, "\n%s\n%s\n", request, respuesta);
+        fprintf(archivo, "%s\n", cache_entry);
 
         // Cierra el archivo para asegurarse de que todos los cambios se escriban en el disco.
         fclose(archivo);
@@ -86,7 +101,8 @@ void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *res
 }
 
 
-int obtener_respuesta_cache(const char *nombre_archivo_cache, char *respuesta, long ttl) {
+
+int obtener_respuesta_cache(const char *nombre_archivo_cache, char *respuesta) {
     /**
     * Intenta recuperar una respuesta HTTP del caché basándose en el nombre de archivo proporcionado.
     * 
@@ -125,7 +141,7 @@ int obtener_respuesta_cache(const char *nombre_archivo_cache, char *respuesta, l
 
                 // Calcula la diferencia entre la hora actual y la estampa de tiempo.
                 // Si la diferencia es menor o igual al TTL global, la respuesta en caché es válida.
-                if (difftime(now, stored_time) <= ttl) {
+                if (difftime(now, stored_time) <= 0) {
                     // Lee la respuesta del archivo de caché y la almacena en el buffer de respuesta.
                     fread(respuesta, 1, st.st_size, archivo);
                     // Cierra el archivo.
@@ -145,104 +161,37 @@ int obtener_respuesta_cache(const char *nombre_archivo_cache, char *respuesta, l
 }
 
 
-void limpiar_cache(const char *directorio_cache, long ttl) {
-    /**
-    * Recorre el directorio de caché proporcionado y elimina los archivos de caché que han excedido su TTL.
-    * 
-    * @param directorio_cache La ruta al directorio donde se almacenan los archivos de caché.
-    * @param ttl El tiempo de vida útil del caché en segundos; los archivos más antiguos que esto se eliminarán.
-    * 
-    * Esta función es una rutina de mantenimiento que ayuda a liberar espacio y asegurar que los datos obsoletos 
-    * sean removidos. Es utilizada en conjunto con una implementación de hilos para ser ejecutada periódicamente.
-    */
 
-    // Abre el directorio especificado para leer su contenido.
-    DIR *dir = opendir(directorio_cache);
-    struct dirent *entry;
+void limpiar_cache(const char *directorio_cache) {
+    DIR *dir;
+    struct dirent *entrada;
 
-    // Verifica que el directorio se haya abierto correctamente.
-    if (!dir) {
-        // Imprime el error y sale de la función si no se pudo abrir el directorio.
-        perror("opendir failed");
-        return;
+    // Abre el directorio de caché
+    dir = opendir(directorio_cache);
+    if (dir == NULL) {
+        perror("Error al abrir el directorio de caché");
+        exit(EXIT_FAILURE);
     }
 
-    // Itera sobre cada entrada en el directorio.
-    while ((entry = readdir(dir)) != NULL) {
-        // Verifica si la entrada actual es un archivo regular.
-        if (entry->d_type == DT_REG) {
-            char path[1024]; // Buffer para almacenar la ruta completa al archivo de caché.
+    // Recorre todas las entradas del directorio
+    while ((entrada = readdir(dir)) != NULL) {
+        // Excluye las entradas "." y ".."
+        if (strcmp(entrada->d_name, ".") == 0 || strcmp(entrada->d_name, "..") == 0) {
+            continue;
+        }
 
-            // Construye la ruta completa al archivo de caché.
-            snprintf(path, sizeof(path), "%s/%s", directorio_cache, entry->d_name);
-            printf("%s", path);
-            // Abre el archivo para leer la estampa de tiempo almacenada.
-            FILE *archivo = fopen(path, "r");
-            if (archivo) {
-                printf("\nif\n");
-                time_t stored_time; // Variable para almacenar la estampa de tiempo leída del archivo.
+        // Construye la ruta completa del archivo de caché
+        char ruta_archivo[FILENAME_MAX];
+        snprintf(ruta_archivo, FILENAME_MAX, "%s/%s", directorio_cache, entrada->d_name);
 
-                // Lee la estampa de tiempo del archivo de caché.
-                if (fscanf(archivo, "%ld\n", &stored_time) == 1) {
-                    printf("\nif2\n");
-                    time_t now = time(NULL); // Obtiene la hora actual.
-
-                    // Calcula la diferencia entre la hora actual y la estampa de tiempo.
-                    // Si la diferencia es mayor que el TTL, el archivo de caché ha expirado.
-                    if (difftime(now, stored_time) > ttl) {
-                        printf("\nif3\n");
-                        // Cierra el archivo antes de intentar eliminarlo.
-                        fclose(archivo);
-                        // Elimina el archivo de caché ya que ha expirado.
-                        remove(path);
-                        // Imprime una confirmación de la eliminación del caché expirado.
-                        printf("Caché expirado eliminado: %s\n", path);
-                    } else {
-                        // Cierra el archivo si la estampa de tiempo es válida y el caché no ha expirado.
-                        fclose(archivo);
-                    }
-                } else {
-                    // Cierra el archivo si no se pudo leer la estampa de tiempo.
-                    fclose(archivo);
-                }
-            }
+        // Elimina el archivo de caché
+        if (remove(ruta_archivo) != 0) {
+            perror("Error al eliminar el archivo de caché");
+        } else {
+            printf("Archivo de caché eliminado: %s\n", ruta_archivo);
         }
     }
 
-    // Imprime un mensaje para indicar que la limpieza del caché se ha ejecutado.
-    printf("Limpiando cache");
-
-    // Cierra el directorio.
+    // Cierra el directorio
     closedir(dir);
-}
-
-void *funcion_limpiar(void *args) {
-    /**
-    * Esta es la función que se ejecuta en un hilo separado y se encarga de la limpieza periódica del caché.
-    * 
-    * @param arg Puntero a cualquier argumento que se quiera pasar a la función del hilo. En este caso no se utiliza.
-    * @return void* Retorna un puntero NULL ya que no se devuelve ningún resultado.
-    *
-    * Este hilo se ejecuta indefinidamente y realiza una limpieza del caché cada 100 segundos.
-    * Cada 100 segundos, esta función despierta y llama a `limpiar_cache` para eliminar los archivos
-    * de caché que han excedido su tiempo de vida útil (TTL).
-    */
-
-    struct LimpiarArgs *limpiarArgs = (struct LimpiarArgs *)args;
-    long ttl = limpiarArgs->ttl;
-
-    // Un bucle infinito que asegura que la limpieza se ejecute constantemente mientras el servidor esté activo.
-    while (1) {
-        // Pausa la ejecución del hilo actual durante 100 segundos.
-        sleep(30);
-
-        // Imprime en la salida estándar que la limpieza del caché está a punto de realizarse.
-        printf("Ejecutando limpieza de caché.\n");
-
-        // Llama a la función `limpiar_cache` pasando el directorio donde se almacena el caché y el TTL global.
-        limpiar_cache(CACHE_DIR, ttl);
-    }
-
-    // Retorna NULL ya que la función no necesita devolver nada.
-    return NULL;
 }

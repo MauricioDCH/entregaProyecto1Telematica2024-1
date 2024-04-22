@@ -16,7 +16,8 @@
 
 #define MAX 4000 // Define el tamaño máximo de los buffers utilizados.
 #define SERVER_COUNT 3 // Especifica el número de servidores web Apache configurados.
-#define SERVER_IP "44.202.61.119" // Dirección IP del servidor proxy para uso en encabezados HTTP.
+#define SERVER_IP "52.0.250.201" // Dirección IP del servidor proxy para uso en encabezados HTTP.
+
 
 long ttl_global = 0; // Variable global para almacenar el tiempo de vida (TTL) del caché.
 int port; // Puerto en el que el servidor proxy estará escuchando.
@@ -26,14 +27,14 @@ int current_server = 0; // Variable para implementar la estrategia de balanceo d
 // Define una estructura para almacenar detalles relevantes de los servidores Apache configurados.
 typedef struct {
     char *hostname; // Nombre de host del servidor Apache.
-    char *documentRoot; // Ruta al directorio raíz de documentos del servidor.
+    char *path;
 } Server;
 
 // Inicializa un arreglo de estructuras `Server` con la configuración de los servidores Apache disponibles.
 Server servers[SERVER_COUNT] = {
-    {"page1.com", "/var/www/page1"}, // Primer servidor Apache configurado.
-    {"page2.com", "/var/www/page2"}, // Segundo servidor Apache configurado.
-    {"page3.com", "/var/www/page3"}  // Tercer servidor Apache configurado.
+    {"3.219.115.240", "/"}, // Primer servidor Apache configurado.
+    {"34.193.175.4", "/"}, // Segundo servidor Apache configurado.
+    {"34.198.37.66", "/"}  // Tercer servidor Apache configurado.
 };
 
 
@@ -78,6 +79,12 @@ void log_message(const char *format, ...) {
     fclose(log_file);
 }
 
+void send_http_error(int client_socket, const char *status, const char *reason) {
+    char response[1024];
+    snprintf(response, sizeof(response), "HTTP/1.1 %s %s\r\nContent-Length: 0\r\nConnection: close\r\n\r\n", status, reason);
+    send(client_socket, response, strlen(response), 0);
+}
+
 void *handle_request(void *client_socket_ptr) {
     /**
     * Esta función maneja las solicitudes HTTP entrantes, sirviendo respuestas desde el caché si están disponibles,
@@ -86,31 +93,69 @@ void *handle_request(void *client_socket_ptr) {
     *
     * @param client_socket_ptr Puntero al descriptor de socket para la conexión del cliente.
     * @return NULL siempre, conforme a la firma requerida para las funciones ejecutadas por hilos.
-    *
-    * La función comienza extrayendo el descriptor del socket del cliente del puntero proporcionado y luego libera
-    * el puntero. Lee la solicitud HTTP del cliente y extrae el método, la URL y el protocolo. Utiliza esta información
-    * para determinar si la solicitud se puede servir desde el caché. Si es así, envía la respuesta almacenada en el caché
-    * directamente al cliente. Si no, determina si la solicitud debe ser manejada por uno de los servidores Apache configurados
-    * o si debe ser redirigida a un servidor externo. Construye una nueva solicitud HTTP según sea necesario y maneja la conexión
-    * al servidor correspondiente. Finalmente, almacena las nuevas respuestas en el caché para futuras solicitudes.
     */
+    
 
     // Extrae el descriptor de socket del cliente y libera la memoria asignada para el puntero.
     int client_socket = *((int*)client_socket_ptr);
-    free(client_socket_ptr); // Libera la memoria asignada para el descriptor del socket
+    free(client_socket_ptr); // Libera la memoria después de recuperar el valor.
 
-    char buffer[MAX], new_request[MAX];
-    // Prepara los buffers para leer la solicitud y almacenar la nueva solicitud a enviar.
-    memset(buffer, 0, MAX);
-    // Recibe la solicitud del cliente.
-    recv(client_socket, buffer, MAX, 0);
+    // Buffer para almacenar la solicitud entrante y la nueva solicitud a formar.
+    char buffer[MAX], new_request[MAX], response_header[MAX];
+    memset(buffer, 0, MAX); // Inicializa el buffer a cero.
+
+    int bytes_received = recv(client_socket, buffer, MAX, 0); // Recibe la solicitud del cliente.
 
     // Variables para almacenar los componentes de la solicitud HTTP.
     char method[10], url[MAX], protocol[10];
-    // Extrae el método, la URL y el protocolo de la solicitud.
-    sscanf(buffer, "%s %s %s", method, url, protocol);
+    char *hostname = malloc(MAX * sizeof(char));
+    char *path = malloc(MAX * sizeof(char));
 
-    // Registra la recepción de la solicitud.
+   // Manejo de errores 
+    if (bytes_received <= 0) {
+        send_http_error(client_socket, "500", "Internal Server Error");
+        close(client_socket);
+        return NULL;
+    }
+
+    if (sscanf(buffer, "%s %s %s", method, url, protocol) < 3 || sscanf(buffer, "%s %s %s", method, url, protocol) > 3) {
+        send_http_error(client_socket, "500", "Internal Server Error");
+        close(client_socket);
+        return NULL;
+    }
+
+    if (strncmp(method, "GET", 3) != 0 && strncmp(method, "HEAD", 4) != 0) {
+        send_http_error(client_socket, "501", "Not Implemented");
+        close(client_socket);
+        return NULL;
+    }
+
+    char *space_ptr = strchr(buffer, ' '); // Encuentra el primer espacio para separar el método.
+    strncpy(method, buffer, space_ptr - buffer); // Extrae el método de la solicitud.
+    method[space_ptr - buffer] = '\0'; // Termina la cadena del método.
+
+    // Procesa el resto de la línea de solicitud para extraer la URL y el protocolo.
+    char *url_start = space_ptr + 1;
+    space_ptr = strchr(url_start, ' ');
+    strncpy(url, url_start, space_ptr - url_start); // Extrae la URL.
+    url[space_ptr - url_start] = '\0'; // Termina la cadena de la URL.
+    strcpy(protocol, space_ptr + 1); // Copia el protocolo.
+    char *protocol_end = strstr(protocol, "\r\n"); // Encuentra el fin de la línea del protocolo.
+    *protocol_end = '\0'; // Termina la cadena del protocolo.
+
+    // Busca el primer '/' en la URL para separar el hostname del path.
+    char *slash = strchr(url, '/');
+    if (slash != NULL) {
+        int hostname_length = slash - url; // Calcula la longitud del hostname.
+        strncpy(hostname, url, hostname_length); // Extrae el hostname.
+        hostname[hostname_length] = '\0'; // Termina la cadena del hostname.
+        strcpy(path, slash); // El resto es el path.
+    } else {
+        strcpy(hostname, url); // Toda la URL es tratada como hostname.
+        path[0] = '\0'; // No hay path.
+    }
+
+    // Registro de la solicitud recibida en el log del sistema.
     log_message("Petición recibida: %s %s %s\n", method, url, protocol);
 
     // Inicializa la variable para determinar si la solicitud es para un servidor Apache.
@@ -120,120 +165,92 @@ void *handle_request(void *client_socket_ptr) {
 
     // Revisa si la URL de la solicitud coincide con alguno de los servidores Apache configurados.
     for (int i = 0; i < SERVER_COUNT; i++) {
-        if (strstr(url, servers[i].hostname) != NULL) {
+        if (strstr(hostname, servers[i].hostname) != NULL) {
             is_for_apache = 1; // La solicitud es para un servidor Apache.
             selected_server = servers[current_server]; // Selecciona el servidor usando la estrategia Round Robin.
+            selected_server.path = path;
             break;
         }
     }
 
-    // Genera el nombre del archivo de caché basado en la URL.
-    char nombre_archivo_cache[2 * MD5_DIGEST_LENGTH + 1] = {0};
-    generar_nombre_archivo_cache(url, nombre_archivo_cache);
+    // Manejo de la caché: genera un nombre de archivo basado en la URL para la caché.
+    char cache_file_name[2 * MD5_DIGEST_LENGTH + 1];
+    generar_nombre_archivo_cache(method, url, cache_file_name);
 
-    char respuesta_cache[MAX * 10]; // Buffer para almacenar la respuesta potencialmente recuperada del caché.
-    // Intenta recuperar la respuesta del caché.
-    if (obtener_respuesta_cache(nombre_archivo_cache, respuesta_cache, ttl_global)) {
-        // Si existe una respuesta en el caché, la envía al cliente.
+    char respuesta_cache[MAX * 10]; // Buffer para la respuesta del caché.
+    if (obtener_respuesta_cache(cache_file_name, respuesta_cache, ttl_global)) {
+        // Si la respuesta está en caché, la envía directamente al cliente.
         log_message("Respuesta para %s servida desde caché.\n\n", url);
         send(client_socket, respuesta_cache, strlen(respuesta_cache), 0);
-    } else {
-        // Si la respuesta no está en el caché, procede a construir y enviar una nueva solicitud.
-        // Encuentra el encabezado "Host:" en la solicitud original para determinar el destino.
-        char *hostStart = strstr(buffer, "Host: ");
-        if (!hostStart) {
-            // En caso de no encontrar el encabezado "Host:", envía una respuesta de error al cliente.
-            const char *bad_request = "HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n";
-            send(client_socket, bad_request, strlen(bad_request), 0);
-            close(client_socket);
-            return;
-        }
-
-        // Extrae el nombre del host de la solicitud.
-        hostStart += strlen("Host: ");
-        char *hostEnd = strstr(hostStart, "\r\n");
-        char hostname[MAX];
-        ptrdiff_t hostnameLen = hostEnd - hostStart;
-        strncpy(hostname, hostStart, hostnameLen);
-        hostname[hostnameLen] = '\0';
-
-        // Construye la nueva solicitud HTTP según si es para un servidor Apache o externo.
-        // Esta sección redirige la solicitud apropiadamente y maneja la respuesta.
-
-        // Determina si la solicitud es para un servidor Apache configurado.
+    } 
+    else {
+        // Si no está en caché, determina si debe ser manejada por un servidor Apache configurado utilizando Round Robin.
         if (is_for_apache) {
             // Prepara la solicitud para un servidor Apache configurado usando el método apropiado.
-            if (strcmp(method, "HEAD") == 0) {
-                // Construye una solicitud HEAD con el encabezado "Via" para identificar el proxy.
-                snprintf(new_request, MAX, "HEAD / HTTP/1.1\r\nHost: %s\r\nVia: 1.1 ubuntu@%s\r\nConnection: close\r\n\r\n", selected_server.hostname, SERVER_IP);
-            } else {
-                // Construye una solicitud GET con el encabezado "Via" para identificar el proxy.
-                snprintf(new_request, MAX, "GET / HTTP/1.1\r\nHost: %s\r\nVia: 1.1 ubuntu@%s\r\nConnection: close\r\n\r\n", selected_server.hostname, SERVER_IP);
-            // Aquí, conecta y envía new_request al servidor Apache seleccionado...
-            }
+            // Formatea una nueva solicitud HTTP para enviar al servidor correspondiente.
+            snprintf(new_request, MAX, "%s %s %s\r\nHost: %s\r\nVia: 1.1 %s@%s\r\nConnection: close\r\n\r\n", method, selected_server.path, protocol, selected_server.hostname, "ubuntu", SERVER_IP);
             // Avanza al siguiente servidor en la estrategia Round Robin para balancear la carga.
+            hostname = selected_server.hostname;
             current_server = (current_server + 1) % SERVER_COUNT;
-        } else {
+        }
+        else {
             // Si la solicitud no es para un servidor Apache, se maneja como una solicitud externa.
-            if (strcmp(method, "HEAD") == 0) {
-                // Construye una solicitud HEAD para el servidor externo, incluyendo el encabezado "Via".
-                snprintf(new_request, MAX, "HEAD %s HTTP/1.1\r\nHost: %s\r\nVia: 1.1 ubuntu@%s\r\nConnection: close\r\n\r\n", url, hostname, SERVER_IP);
-            } else {
-                // Construye la solicitud (GET, POST, etc.) para el servidor externo, incluyendo el encabezado "Via".
-                snprintf(new_request, MAX, "%s %s %s\r\nHost: %s\r\nVia: 1.1 ubuntu@%s\r\nConnection: close\r\n\r\n", method, url, protocol, hostname, SERVER_IP);
-            }
+            // Formatea una nueva solicitud HTTP para enviar al servidor correspondiente.
+            snprintf(new_request, MAX, "%s %s %s\r\nHost: %s\r\nVia: 1.1 %s@%s\r\nConnection: close\r\n\r\n", method, path, protocol, hostname, "ubuntu", SERVER_IP);
         }
 
-        // Prepara la estructura de dirección para la conexión de red.
+        // Preparación para conectar con el servidor destino.
         struct addrinfo hints, *res;
         memset(&hints, 0, sizeof(hints));
-        hints.ai_family = AF_INET; // Utiliza IPv4.
-        hints.ai_socktype = SOCK_STREAM; // Especifica un socket de flujo.
+        hints.ai_family = AF_INET;
+        hints.ai_socktype = SOCK_STREAM;
 
-        // Intenta resolver la dirección del servidor web (Apache o externo).
         if (getaddrinfo(hostname, "80", &hints, &res) != 0) {
             perror("getaddrinfo failed");
             close(client_socket);
-            return;
+            return NULL;
         }
 
-        // Crea un socket para la conexión con el servidor web.
+        // Conexión con el servidor destino.
         int server_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-        // Intenta conectar con el servidor web.
         if (connect(server_socket, res->ai_addr, res->ai_addrlen) < 0) {
             perror("Connection failed");
-            freeaddrinfo(res); // Libera la memoria de los resultados de getaddrinfo.
+            send_http_error(client_socket, "500", "Internal Server Error");
+            freeaddrinfo(res);
             close(client_socket);
-            return;
+            return NULL;
         }
-        freeaddrinfo(res); // Libera la memoria de los resultados de getaddrinfo.
+        freeaddrinfo(res);
 
-        // Envía la nueva solicitud al servidor web.
+        // Envío de la solicitud al servidor destino y manejo de la respuesta.
         send(server_socket, new_request, strlen(new_request), 0);
 
         // Inicializa el buffer para la respuesta y lee la respuesta del servidor web.
         memset(buffer, 0, MAX);
         int bytes_received = recv(server_socket, buffer, MAX, 0);
+
+        // Registro final de la acción realizada.
+        log_message("Respuesta enviada a %s, con encabezado Via: ubuntu@%s\n", hostname, SERVER_IP);
+
+        // Procesamiento de la respuesta del servidor.
+        char *content_start = strstr(buffer, "\r\n\r\n") + 4;
+        strncpy(response_header, buffer, content_start - buffer);
+        response_header[content_start - buffer] = '\0';
+        log_message("Encabezados de respuesta: %s", response_header);
+
         // Mientras haya datos para leer, sigue enviando la respuesta al cliente.
         while (bytes_received > 0) {
             send(client_socket, buffer, bytes_received, 0);
-            // Aquí deberías concatenar `buffer` a `respuesta_cache` si esperas respuestas más grandes que MAX
             bytes_received = recv(server_socket, buffer, MAX, 0);
         }
 
-        // Una vez terminado el envío de la respuesta, almacena la respuesta en caché para uso futuro.
-        almacenar_respuesta_cache(nombre_archivo_cache, buffer);
+        almacenar_respuesta_cache(cache_file_name, buffer);
 
-        // Después de manejar la solicitud y enviar toda la respuesta al cliente, registra la acción.
-        log_message("Respuesta enviada a %s, con encabezado Via: ubuntu@%s\n\n", hostname, SERVER_IP);
-
-        // Cierra el socket del servidor web.
         close(server_socket);
     }
 
-    // Cierra la conexión con el cliente y finaliza el hilo.
     close(client_socket);
-    return NULL; // Finaliza el hilo retornando NULL
+    return NULL;
 }
 
 int main(int argc, char *argv[]) {
@@ -253,15 +270,18 @@ int main(int argc, char *argv[]) {
     */
 
     // Verifica que se hayan proporcionado todos los argumentos necesarios.
-    if (argc != 4) {
-        fprintf(stderr, "Uso: %s <TTL> <puerto> </ruta/log.log>\n", argv[0]);
+    if (argc != 3) {
+        fprintf(stderr, "Uso: %s <puerto> </ruta/log.log>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    // Establece las variables globales basadas en los argumentos de entrada.
-    ttl_global = atol(argv[1]); // Tiempo de vida del caché en segundos.
-    port = atoi(argv[2]); // Puerto en el cual el servidor debe escuchar.
-    strncpy(logPath, argv[3], sizeof(logPath) - 1); // Ruta al archivo de log.
+    // Ingresar por consola el tiempo de vida del caché.
+    printf("Ingrese el tiempo de vida de los archivos de caché (TTL) en segundos: ");
+    scanf("%ld", &ttl_global);
+    printf("Usted ingresó \'%ld\' segundos de tiempo de vida para los archivos caché.\n", ttl_global);
+    
+    port = atoi(argv[1]); // Puerto en el cual el servidor debe escuchar.
+    strncpy(logPath, argv[2], sizeof(logPath) - 1); // Ruta al archivo de log.
 
     // Inicializa un hilo de limpieza del caché.
     pthread_t hilo_de_limpieza;

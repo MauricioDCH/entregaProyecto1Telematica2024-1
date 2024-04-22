@@ -14,8 +14,7 @@
 #include <stdarg.h>
 #include "manejoCache.h"
 
-
-void generar_nombre_archivo_cache(const char *url, char *nombre_archivo_cache) {
+void generar_nombre_archivo_cache(const char *method, const char *url, char *nombre_archivo_cache) {
     /**
     * Genera un nombre de archivo de caché basado en un hash MD5 de la URL dada.
     * 
@@ -30,8 +29,10 @@ void generar_nombre_archivo_cache(const char *url, char *nombre_archivo_cache) {
     */
     unsigned char digest[MD5_DIGEST_LENGTH]; // Crea un array para almacenar el hash MD5.
 
-    // Calcula el hash MD5 de la URL y almacena el resultado en 'digest'.
-    MD5((unsigned char*)url, strlen(url), (unsigned char*)&digest);    
+    // Calcula el hash MD5 de la URL y el método
+    char method_url[1024]; // Asegurarse de que este buffer sea lo suficientemente grande
+    snprintf(method_url, sizeof(method_url), "%s:%s", method, url); // Concatena el método y la URL con un separador
+    MD5((unsigned char*)method_url, strlen(method_url), (unsigned char*)&digest); 
 
     // Convierte el hash MD5 en una cadena de caracteres hexadecimales.
     for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
@@ -45,7 +46,6 @@ void generar_nombre_archivo_cache(const char *url, char *nombre_archivo_cache) {
     // Opcional: imprime la URL para propósitos de depuración o registro.
     printf("URL: %s\n", url);
 }
-
 
 void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *respuesta) {
     /**
@@ -65,8 +65,21 @@ void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *res
     // Intenta abrir (o crear si no existe) el archivo de caché con permisos de escritura.
     FILE *archivo = fopen(ruta_completa, "w");
 
+    // if(archivo == NULL) {
+    //     printf("Error archivo cache");
+    // }
+
+
     if(archivo == NULL) {
-        printf("Error archivo cache");
+        // Intenta crear la carpeta "historial"
+        if (mkdir(CACHE_DIR, 0777) == 0) {
+            printf("La carpeta \"%s\" se ha creado exitosamente.\n", CACHE_DIR);
+            // Intenta abrir el archivo nuevamente después de crear la carpeta.
+            archivo = fopen(ruta_completa, "w");
+        } else {
+            perror("Error al intentar crear la carpeta");
+            exit(EXIT_FAILURE);
+        }
     }
 
     // Verifica si el archivo se abrió correctamente.
@@ -86,7 +99,6 @@ void almacenar_respuesta_cache(const char *nombre_archivo_cache, const char *res
     }
     // Si el archivo no pudo abrirse, no se realiza ninguna acción.
 }
-
 
 
 int obtener_respuesta_cache(const char *nombre_archivo_cache, char *respuesta, long ttl) {
@@ -148,7 +160,6 @@ int obtener_respuesta_cache(const char *nombre_archivo_cache, char *respuesta, l
 }
 
 
-
 void limpiar_cache(const char *directorio_cache, long ttl) {
     /**
     * Recorre el directorio de caché proporcionado y elimina los archivos de caché que han excedido su TTL.
@@ -183,18 +194,15 @@ void limpiar_cache(const char *directorio_cache, long ttl) {
             // Abre el archivo para leer la estampa de tiempo almacenada.
             FILE *archivo = fopen(path, "r");
             if (archivo) {
-                printf("\nif\n");
                 time_t stored_time; // Variable para almacenar la estampa de tiempo leída del archivo.
 
                 // Lee la estampa de tiempo del archivo de caché.
                 if (fscanf(archivo, "%ld\n", &stored_time) == 1) {
-                    printf("\nif2\n");
                     time_t now = time(NULL); // Obtiene la hora actual.
 
                     // Calcula la diferencia entre la hora actual y la estampa de tiempo.
                     // Si la diferencia es mayor que el TTL, el archivo de caché ha expirado.
                     if (difftime(now, stored_time) > ttl) {
-                        printf("\nif3\n");
                         // Cierra el archivo antes de intentar eliminarlo.
                         fclose(archivo);
                         // Elimina el archivo de caché ya que ha expirado.
@@ -220,4 +228,33 @@ void limpiar_cache(const char *directorio_cache, long ttl) {
     closedir(dir);
 }
 
+void *funcion_limpiar(void *args) {
+    /**
+    * Esta es la función que se ejecuta en un hilo separado y se encarga de la limpieza periódica del caché.
+    * 
+    * @param arg Puntero a cualquier argumento que se quiera pasar a la función del hilo. En este caso no se utiliza.
+    * @return void* Retorna un puntero NULL ya que no se devuelve ningún resultado.
+    *
+    * Este hilo se ejecuta indefinidamente y realiza una limpieza del caché cada 100 segundos.
+    * Cada 100 segundos, esta función despierta y llama a `limpiar_cache` para eliminar los archivos
+    * de caché que han excedido su tiempo de vida útil (TTL).
+    */
 
+    struct LimpiarArgs *limpiarArgs = (struct LimpiarArgs *)args;
+    long ttl = limpiarArgs->ttl;
+
+    // Un bucle infinito que asegura que la limpieza se ejecute constantemente mientras el servidor esté activo.
+    while (1) {
+        // Pausa la ejecución del hilo actual durante 100 segundos.
+        sleep(100);
+
+        // Imprime en la salida estándar que la limpieza del caché está a punto de realizarse.
+        printf("Ejecutando limpieza de caché.\n");
+
+        // Llama a la función `limpiar_cache` pasando el directorio donde se almacena el caché y el TTL global.
+        limpiar_cache(CACHE_DIR, ttl);
+    }
+
+    // Retorna NULL ya que la función no necesita devolver nada.
+    return NULL;
+}
